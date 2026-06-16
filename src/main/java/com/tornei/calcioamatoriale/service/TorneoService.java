@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tornei.calcioamatoriale.model.Partita;
@@ -31,7 +32,7 @@ public class TorneoService {
     public Torneo findById(Long id) {
         Torneo torneo = torneoRepository.findById(id).orElse(null);
         if (torneo != null) {
-            torneo.getSquadre().size();
+            torneo.getSquadre().size(); // inizializza la collezione LAZY dentro la transazione
         }
         return torneo;
     }
@@ -41,8 +42,10 @@ public class TorneoService {
         return partitaRepository.findByTorneoId(torneoId);
     }
 
-    // Calcolo automatico della classifica
-    @Transactional(readOnly = true)
+    // READ_COMMITTED: calcoliamo la classifica su risultati già confermati.
+    // non leggiamo goal inseriti da una transazione ancora non chiusa
+    // (es. un admin che sta modificando un risultato nello stesso istante).
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Map<String, Integer> getClassifica(Long torneoId) {
         Torneo torneo = findById(torneoId);
         List<Partita> partite = getCalendario(torneoId);
@@ -69,7 +72,8 @@ public class TorneoService {
                 }
             }
         }
-        // Ordiniamo la classifica per punti (decrescente)
+
+        // Ordina per punti decrescenti
         return classifica.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .collect(Collectors.toMap(
@@ -87,6 +91,7 @@ public class TorneoService {
     
     @Transactional
     public void eliminaTorneo(Long id) {
+        // Prima eliminiamo le partite associate
         List<Partita> partite = partitaRepository.findByTorneoId(id);
         partitaRepository.deleteAll(partite);
         torneoRepository.deleteById(id);

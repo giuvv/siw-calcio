@@ -2,6 +2,7 @@ package com.tornei.calcioamatoriale.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tornei.calcioamatoriale.model.Partita;
@@ -29,14 +30,52 @@ public class SquadraService {
     public Squadra findById(Long id) {
         return squadraRepository.findById(id).orElse(null);
     }
+    
+    // ANALISI PRESTAZIONI
+    // Caso d'uso: "visualizzazione dettaglio squadra con giocatori"
+    // Confronto tra due strategie di fetch JPA
 
+    /*
+     * STRATEGIA 1 — Fetch LAZY (causa il problema N+1).
+     *
+     * Hibernate esegue DUE query SQL separate:
+     *   1. SELECT * FROM squadra WHERE id = ?
+     *   2. SELECT * FROM giocatore WHERE squadra_id = ?   ← scatenata da .size()
+     *
+     * Con N squadre, questo diventerebbe N+1 query (1 per le squadre + N per i giocatori).
+     * Con dataset grandi, il costo è significativo.
+     */
     @Transactional(readOnly = true)
-    public Squadra findByIdWithGiocatori(Long id) {
+    public Squadra findByIdConGiocatoriLazy(Long id) {
         Squadra squadra = squadraRepository.findById(id).orElse(null);
         if (squadra != null) {
-            squadra.getGiocatori().size(); 
+            squadra.getGiocatori().size(); // forza il caricamento lazy → seconda query
         }
         return squadra;
+    }
+
+    /**
+     * STRATEGIA 2 — JOIN FETCH via JPQL (1 sola query).
+     *
+     * Hibernate esegue UNA sola query SQL:
+     *   SELECT s.*, g.* FROM squadra s
+     *   LEFT JOIN giocatore g ON g.squadra_id = s.id
+     *   WHERE s.id = ?
+     *
+     * Squadra e giocatori vengono caricati insieme, eliminando il problema N+1.
+     * Questa è la strategia scelta per la produzione.
+     */
+    @Transactional(readOnly = true)
+    public Squadra findByIdConGiocatoriJoinFetch(Long id) {
+        return squadraRepository.findByIdWithGiocatoriEager(id);
+    }
+
+    /**
+     * Metodo usato dal controller pubblico: usa la strategia ottimizzata (JOIN FETCH).
+     */
+    @Transactional(readOnly = true)
+    public Squadra findByIdWithGiocatori(Long id) {
+        return findByIdConGiocatoriJoinFetch(id);
     }
 
     @Transactional
@@ -44,13 +83,14 @@ public class SquadraService {
         squadraRepository.save(squadra);
     }
 
-    // IL METODO CORRETTO PER L'ELIMINAZIONE SICURA
-    @Transactional
+    // READ_COMMITTED: durante l'eliminazione leggiamo tornei e partite;
+    // vogliamo vedere solo dati confermati, non scritture parziali di altre transazioni.
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void eliminaSquadra(Long id) {
         Squadra squadra = squadraRepository.findById(id).orElse(null);
         
         if (squadra != null) {
-            // 1. Rimuoviamo la squadra dalla tabella di congiunzione dei Tornei (Many-to-Many)
+            // 1. Rimuove la squadra dalla tabella di congiunzione dei Tornei (Many-to-Many)
             Iterable<Torneo> tornei = torneoRepository.findAll();
             for (Torneo t : tornei) {
                 if (t.getSquadre() != null && t.getSquadre().contains(squadra)) {
@@ -59,12 +99,12 @@ public class SquadraService {
                 }
             }
 
-            // 2. Eliminiamo tutti i giocatori iscritti a questa squadra (One-to-Many)
+            // 2. Elimina tutti i giocatori iscritti (One-to-Many)
             if (squadra.getGiocatori() != null) {
                 giocatoreRepository.deleteAll(squadra.getGiocatori());
             }
 
-            // 3. Eliminiamo tutte le partite (calendario) in cui gioca questa squadra
+            // 3. Elimina le partite in cui gioca questa squadra
             Iterable<Partita> tutteLePartite = partitaRepository.findAll();
             for (Partita p : tutteLePartite) {
                 if (p.getSquadraHome().getId().equals(id) || p.getSquadraAway().getId().equals(id)) {
@@ -72,7 +112,7 @@ public class SquadraService {
                 }
             }
 
-            // 4. Ora che il database è pulito e non ci sono più vincoli attivi, eliminiamo la squadra
+            // 4. Elimina la squadra
             squadraRepository.delete(squadra);
         }
     }

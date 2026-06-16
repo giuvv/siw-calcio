@@ -139,9 +139,6 @@ public class Partita {
         this.arbitro = arbitro;
     }
 
-    // ==========================================
-    // I NUOVI GETTER E SETTER PER I COMMENTI
-    // ==========================================
     public List<Commento> getCommenti() {
         return commenti;
     }
@@ -149,8 +146,6 @@ public class Partita {
     public void setCommenti(List<Commento> commenti) {
         this.commenti = commenti;
     }
-
-    // --- HASHCODE E EQUALS ---
 
     @Override
     public int hashCode() {
