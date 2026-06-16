@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments/layout :: head('Classifica')}"></head>
 <body>
     <nav th:replace="~{fragments/layout :: navbar}"></nav>
@@ -7,92 +7,28 @@
     <div class="container">
         <h1>Classifica</h1>
         <p class="text-muted">Torneo: <strong th:text="${torneo.nome}"></strong></p>
-        <div id="classifica-react" th:attr="data-torneo-id=${torneo.id}">
-            <p class="text-muted">Caricamento classifica...</p>
-        </div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Squadra</th>
+                    <th style="text-align: center;">Punti</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="entry, iter : ${classifica}">
+                    <td th:text="${iter.count}">1</td>
+                    <td th:text="${entry.key}">Squadra</td>
+                    <td style="text-align: center; font-weight: 700;" th:text="${entry.value}">0</td>
+                </tr>
+            </tbody>
+        </table>
 
         <br>
         <a th:href="@{/torneo/{id}(id=${torneo.id})}" class="btn">Torna al torneo</a>
     </div>
 
     <footer th:replace="~{fragments/layout :: footer}"></footer>
-
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-
-    <script>
-        const { useState, useEffect } = React;
-
-        function ClassificaTable({ torneoId }) {
-            const [dati, setDati] = useState([]);
-            const [loading, setLoading] = useState(true);
-            const [errore, setErrore] = useState(null);
-
-            useEffect(() => {
-                fetch('/api/torneo/' + torneoId + '/classifica')
-                    .then(function(res) {
-                        if (!res.ok) throw new Error('Errore nel caricamento');
-                        return res.json();
-                    })
-                    .then(function(data) {
-                        var entries = Object.entries(data).sort(function(a, b) {
-                            return b[1] - a[1];
-                        });
-                        setDati(entries);
-                        setLoading(false);
-                    })
-                    .catch(function(err) {
-                        setErrore(err.message);
-                        setLoading(false);
-                    });
-            }, [torneoId]);
-
-            if (loading) {
-                return React.createElement('p', { className: 'text-muted' }, 'Caricamento...');
-            }
-
-            if (errore) {
-                return React.createElement('p', { style: { color: 'red' } }, 'Errore: ' + errore);
-            }
-
-            if (dati.length === 0) {
-                return React.createElement('p', { className: 'empty-state' },
-                    'Nessuna squadra in classifica. Il torneo non ha ancora partite giocate.');
-            }
-
-            var righe = dati.map(function(entry, index) {
-                var nome = entry[0];
-                var punti = entry[1];
-                var posizione = index + 1;
-                var stile = posizione === 1
-                    ? { backgroundColor: '#f0fdf6', fontWeight: '700' }
-                    : {};
-
-                return React.createElement('tr', { key: nome, style: stile },
-                    React.createElement('td', null, posizione),
-                    React.createElement('td', null, nome),
-                    React.createElement('td', { style: { textAlign: 'center', fontWeight: '700' } }, punti)
-                );
-            });
-
-            var thead = React.createElement('thead', null,
-                React.createElement('tr', null,
-                    React.createElement('th', null, 'Pos'),
-                    React.createElement('th', null, 'Squadra'),
-                    React.createElement('th', { style: { textAlign: 'center' } }, 'Punti')
-                )
-            );
-
-            var tbody = React.createElement('tbody', null, righe);
-
-            return React.createElement('table', null, thead, tbody);
-        }
-
-        // Inizializzazione
-        var container = document.getElementById('classifica-react');
-        var torneoId = container.getAttribute('data-torneo-id');
-        var root = ReactDOM.createRoot(container);
-        root.render(React.createElement(ClassificaTable, { torneoId: torneoId }));
-    </script>
 </body>
 </html>
