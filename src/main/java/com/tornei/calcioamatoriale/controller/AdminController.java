@@ -9,6 +9,11 @@ import org.springframework.validation.BindingResult;
 import com.tornei.calcioamatoriale.model.*;
 import com.tornei.calcioamatoriale.service.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -19,38 +24,52 @@ public class AdminController {
     @Autowired private PartitaService partitaService;
     @Autowired private ArbitroService arbitroService;
 
-    // ==========================================
     // DASHBOARD
-    // ==========================================
     @GetMapping("/dashboard")
     public String dashboard() {
         return "admin/dashboard";
     }
 
-
-    // ==========================================
     // GESTIONE TORNEI
-    // ==========================================
     @GetMapping("/torneo/nuovo")
     public String formNuovoTorneo(Model model) {
         model.addAttribute("torneo", new Torneo());
-        model.addAttribute("tutteLeSquadre", squadraService.findAll()); 
+        model.addAttribute("tutteLeSquadre", squadraService.findAll());
+        model.addAttribute("squadreSelezionate", new ArrayList<Long>());
         return "admin/form-torneo";
     }
 
     @GetMapping("/torneo/{id}/modifica")
     public String formModificaTorneo(@PathVariable Long id, Model model) {
-        model.addAttribute("torneo", torneoService.findById(id));
+        Torneo torneo = torneoService.findById(id);
+        model.addAttribute("torneo", torneo);
         model.addAttribute("tutteLeSquadre", squadraService.findAll());
+        // Passiamo solo gli ID delle squadre già selezionate, così Thymeleaf
+        // può confrontare Long con Long invece di Long con Squadra (che non funziona)
+        List<Long> squadreSelezionate = torneo.getSquadre() != null
+                ? torneo.getSquadre().stream().map(Squadra::getId).collect(Collectors.toList())
+                : new ArrayList<>();
+        model.addAttribute("squadreSelezionate", squadreSelezionate);
         return "admin/form-torneo";
     }
 
     @PostMapping("/torneo/salva")
-    public String salvaTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult result, Model model) {
+    public String salvaTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult result,
+                              @RequestParam(value = "squadreIds", required = false) List<Long> squadreIds,
+                              Model model) {
         if (result.hasErrors()) {
             model.addAttribute("tutteLeSquadre", squadraService.findAll());
+            model.addAttribute("squadreSelezionate", squadreIds != null ? squadreIds : new ArrayList<>());
             return "admin/form-torneo";
         }
+        // Carichiamo le entità Squadra a partire dagli ID ricevuti dal form
+        List<Squadra> squadre = (squadreIds != null)
+                ? squadreIds.stream()
+                        .map(squadraService::findById)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+        torneo.setSquadre(squadre);
         torneoService.salvaTorneo(torneo);
         return "redirect:/tornei";
     }
@@ -61,9 +80,7 @@ public class AdminController {
         return "redirect:/tornei";
     }
 
-    // ==========================================
     // GESTIONE SQUADRE
-    // ==========================================
     @GetMapping("/squadra/nuova")
     public String formNuovaSquadra(Model model) {
         model.addAttribute("squadra", new Squadra());
@@ -91,14 +108,11 @@ public class AdminController {
         return "redirect:/tornei";
     }
 
-
-    // ==========================================
     // GESTIONE GIOCATORI
-    // ==========================================
     @GetMapping("/giocatore/nuovo")
     public String formNuovoGiocatore(Model model) {
         model.addAttribute("giocatore", new Giocatore());
-        model.addAttribute("squadre", squadraService.findAll()); // Serve per il menu a tendina
+        model.addAttribute("squadre", squadraService.findAll());
         return "admin/form-giocatore";
     }
 
@@ -119,10 +133,7 @@ public class AdminController {
         return "redirect:/squadra/" + giocatore.getSquadra().getId();
     }
 
-    
-    // ==========================================
     // GESTIONE ARBITRI
-    // ==========================================
     @GetMapping("/arbitri")
     public String elencoArbitri(Model model) {
     	model.addAttribute("arbitri", arbitroService.findAll());
@@ -156,16 +167,13 @@ public class AdminController {
     	return "redirect:/admin/arbitri";
     }
     
-
-    // ==========================================
     // GESTIONE PARTITE
-    // ==========================================
     @GetMapping("/partita/nuova")
     public String formNuovaPartita(Model model) {
         model.addAttribute("partita", new Partita());
         model.addAttribute("tornei", torneoService.findAll());
         model.addAttribute("squadre", squadraService.findAll());
-        model.addAttribute("arbitri", arbitroService.findAll()); // <-- aggiunta
+        model.addAttribute("arbitri", arbitroService.findAll());
         return "admin/form-partita";
     }
 
@@ -198,7 +206,6 @@ public class AdminController {
         Partita partita = partitaService.findById(id);
         Long torneoId = partita.getTorneo().getId();
         partitaService.eliminaPartita(id);
-        // Torna al calendario del torneo
         return "redirect:/torneo/" + torneoId + "/calendario";
     }
 }

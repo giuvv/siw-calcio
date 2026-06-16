@@ -22,7 +22,7 @@
                 <span th:if="${#fields.hasErrors('luogo')}" th:errors="*{luogo}" class="error-message"></span>
             </div>
 
-            <input type="hidden" th:field="*{stato}" value="SCHEDULED" />
+            <input type="hidden" name="stato" value="SCHEDULED" />
 
             <div class="form-group">
                 <label>Torneo</label>

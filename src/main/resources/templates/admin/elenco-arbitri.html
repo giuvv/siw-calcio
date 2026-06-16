@@ -23,10 +23,10 @@
                     <span class="text-muted">Codice: <span th:text="${a.codiceArbitrale}"></span></span>
                 </div>
                 <div style="display: flex; gap: 8px;">
-                    <a th:href="@{/admin/arbitro/{id}/modifica(id=${a.id})}" class="btn btn-warning"></a>
+                    <a th:href="@{/admin/arbitro/{id}/modifica(id=${a.id})}" class="btn btn-warning">Modifica</a>
                     <a th:href="@{/admin/arbitro/{id}/elimina(id=${a.id})}" 
                        class="btn btn-danger"
-                       onclick="return confirm('Sei sicuro di voler eliminare questo arbitro?');"></a>
+                       onclick="return confirm('Sei sicuro di voler eliminare questo arbitro?');">Elimina</a>
                 </div>
             </li>
         </ul>

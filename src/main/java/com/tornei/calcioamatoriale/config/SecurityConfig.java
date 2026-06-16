@@ -1,4 +1,4 @@
-package com.tornei.calcioamatoriale.configuration;
+package com.tornei.calcioamatoriale.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +24,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 // 1. Pagine pubbliche (Tutti possono vederle)
-                .requestMatchers("/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**", "/error", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**", "/api/**", "/error", "/css/**", "/js/**").permitAll()
                 
                 // 2. Pagine Amministratore (Solo chi ha ruolo ADMIN)
                 .requestMatchers("/admin/**").hasRole("ADMIN")

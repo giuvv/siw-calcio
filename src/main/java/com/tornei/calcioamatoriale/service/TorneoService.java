@@ -1,8 +1,10 @@
 package com.tornei.calcioamatoriale.service;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +31,14 @@ public class TorneoService {
     public Torneo findById(Long id) {
         Torneo torneo = torneoRepository.findById(id).orElse(null);
         if (torneo != null) {
-            torneo.getSquadre().size(); // Inizializza la collezione Lazy delle squadre
+            torneo.getSquadre().size();
         }
         return torneo;
     }
 
     @Transactional(readOnly = true)
     public List<Partita> getCalendario(Long torneoId) {
-        return partitaRepository.findByTorneoId(torneoId); // Assicurati di avere questo metodo nel PartitaRepository!
+        return partitaRepository.findByTorneoId(torneoId);
     }
 
     // Calcolo automatico della classifica
@@ -67,7 +69,15 @@ public class TorneoService {
                 }
             }
         }
-        return classifica;
+        // Ordiniamo la classifica per punti (decrescente)
+        return classifica.entrySet().stream()
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new
+                ));
     }
     
     @Transactional
@@ -77,6 +87,8 @@ public class TorneoService {
     
     @Transactional
     public void eliminaTorneo(Long id) {
+        List<Partita> partite = partitaRepository.findByTorneoId(id);
+        partitaRepository.deleteAll(partite);
         torneoRepository.deleteById(id);
     }
 }

@@ -1,4 +1,4 @@
-package com.tornei.calcio_amatoriale;
+package com.tornei.calcioamatoriale;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

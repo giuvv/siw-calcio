@@ -31,7 +31,9 @@
             <div class="form-group">
                 <label>Seleziona Squadre Partecipanti</label>
                 <div th:each="s : ${tutteLeSquadre}" style="margin-bottom: 8px;">
-                    <input type="checkbox" th:field="*{squadre}" th:value="${s.id}" style="width: auto; padding: 0; vertical-align: middle;" />
+                    <input type="checkbox" name="squadreIds" th:value="${s.id}"
+                           th:checked="${squadreSelezionate.contains(s.id)}"
+                           style="width: auto; padding: 0; vertical-align: middle;" />
                     <label th:text="${s.nome}" style="display: inline; text-transform: none; font-weight: 500; letter-spacing: 0; margin-left: 5px;"></label>
                 </div>
             </div>
