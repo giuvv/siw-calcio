@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Squadra')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1 th:text="${squadra.nome}">Nome Squadra</h1>
+        <p><strong>Città:</strong> <span th:text="${squadra.citta}"></span></p>
+        <p th:if="${squadra.annoFondazione != null}">
+            <strong>Anno di fondazione:</strong> <span th:text="${squadra.annoFondazione}"></span>
+        </p>
+        
+        <h2>Giocatori</h2>
+        
+        <p class="empty-state" th:if="${#lists.isEmpty(squadra.giocatori)}">
+            Nessun giocatore registrato in questa squadra.
+        </p>
+        
+        <ul class="list-group">
+            <li th:each="g : ${squadra.giocatori}" class="list-item">
+                <div>
+                    <strong th:text="${g.nome} + ' ' + ${g.cognome}">Nome</strong>
+                    <span th:if="${g.ruolo != null and !g.ruolo.isEmpty()}" class="text-muted">
+                        — <span th:text="${g.ruolo}"></span>
+                    </span>
+                </div>
+                <span sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/admin/giocatore/{id}/modifica(id=${g.id})}" class="btn btn-warning">Modifica</a>
+                </span>
+            </li>
+        </ul>
+
+        <div sec:authorize="hasRole('ADMIN')" class="admin-panel">
+            <strong>Azioni Admin</strong>
+            <a th:href="@{/admin/squadra/{id}/modifica(id=${squadra.id})}" class="btn btn-warning">Modifica Squadra</a>
+            <a th:href="@{/admin/giocatore/nuovo}" class="btn btn-primary">Aggiungi Giocatore</a>
+            <a th:href="@{/admin/squadra/{id}/elimina(id=${squadra.id})}" class="btn btn-danger"
+               onclick="return confirm('Sei sicuro di voler eliminare questa squadra?');">Elimina Squadra</a>
+        </div>
+        
+        <br>
+        <a th:href="@{/tornei}" class="btn">Torna ai tornei</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Dashboard Admin')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1>Dashboard Admin</h1>
+        <p class="text-muted">Seleziona l'operazione da eseguire</p>
+
+        <ul class="list-group">
+            <li class="list-item">
+                <a th:href="@{/admin/torneo/nuovo}">Crea nuovo Torneo</a>
+                <a th:href="@{/admin/torneo/nuovo}" class="btn btn-primary">Vai</a>
+            </li>
+            <li class="list-item">
+                <a th:href="@{/admin/squadra/nuova}">Inserisci nuova Squadra</a>
+                <a th:href="@{/admin/squadra/nuova}" class="btn btn-primary">Vai</a>
+            </li>
+            <li class="list-item">
+                <a th:href="@{/admin/giocatore/nuovo}">Inserisci nuovo Giocatore</a>
+                <a th:href="@{/admin/giocatore/nuovo}" class="btn btn-primary">Vai</a>
+            </li>
+            <li class="list-item">
+                <a th:href="@{/admin/partita/nuova}">Pianifica nuova Partita</a>
+                <a th:href="@{/admin/partita/nuova}" class="btn btn-primary">Vai</a>
+            </li>
+            <li class="list-item">
+                <a th:href="@{/admin/arbitri}">Gestisci Arbitri</a>
+                <a th:href="@{/admin/arbitri}" class="btn btn-primary">Vai</a>
+            </li>
+        </ul>
+
+        <br>
+        <a th:href="@{/tornei}" class="btn">Torna al sito pubblico</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

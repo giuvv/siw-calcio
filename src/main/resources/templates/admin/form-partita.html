@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Pianifica Partita')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container container-medium">
+        <h1>Pianifica Partita</h1>
+        
+        <form th:action="@{/admin/partita/salva}" th:object="${partita}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label>Data e Ora</label>
+                <input type="datetime-local" th:field="*{dataOra}" />
+                <span th:if="${#fields.hasErrors('dataOra')}" th:errors="*{dataOra}" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Luogo (Stadio/Campo)</label>
+                <input type="text" th:field="*{luogo}" />
+                <span th:if="${#fields.hasErrors('luogo')}" th:errors="*{luogo}" class="error-message"></span>
+            </div>
+
+            <input type="hidden" th:field="*{stato}" value="SCHEDULED" />
+
+            <div class="form-group">
+                <label>Torneo</label>
+                <select th:field="*{torneo}">
+                    <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Squadra in Casa</label>
+                <select th:field="*{squadraHome}">
+                    <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Squadra Ospite</label>
+                <select th:field="*{squadraAway}">
+                    <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Arbitro Designato</label>
+                <select th:field="*{arbitro}">
+                    <option value="">Nessun arbitro (da designare)</option>
+                    <option th:each="a : ${arbitri}" th:value="${a.id}" 
+                            th:text="${a.nome} + ' ' + ${a.cognome} + ' (' + ${a.codiceArbitrale} + ')'"></option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Pianifica</button>
+                <a th:href="@{/admin/dashboard}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

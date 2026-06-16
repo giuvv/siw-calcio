@@ -1,0 +1,366 @@
+/* === ScoreMaster === */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;900&display=swap');
+
+:root {
+    --primary-color: #0a0a0a;
+    --accent-color: #8fbc8f;
+    --hot-color: #ff5722;
+    --warning-color: #ffc107;
+    --danger-color: #e63946;
+    --bg-color: #fafafa;
+    --card-bg: #ffffff;
+    --text-color: #1a1a1a;
+    --text-muted: #666666;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+}
+
+/* === NAVBAR === */
+.navbar {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 18px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid var(--accent-color);
+}
+
+.navbar-brand {
+    color: white !important;
+    text-decoration: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8em;
+    letter-spacing: 3px;
+    transition: color 0.2s;
+}
+
+.navbar-brand:hover { color: var(--accent-color) !important; }
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.navbar a:hover { color: var(--accent-color); }
+
+.navbar .user-info {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.navbar .user-info strong { color: var(--accent-color); }
+
+/* === CONTAINER === */
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 35px;
+    background-color: var(--card-bg);
+    border: 3px solid var(--primary-color);
+    box-shadow: 8px 8px 0 var(--primary-color);
+}
+
+.container-narrow { max-width: 600px; }
+.container-medium { max-width: 750px; }
+
+/* === TITOLI === */
+h1, h2, h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--primary-color);
+    letter-spacing: 2px;
+    line-height: 1.1;
+    margin: 0 0 25px 0;
+}
+
+h1 {
+    font-size: 3em;
+    border-bottom: 4px solid var(--accent-color);
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+h2 {
+    font-size: 2em;
+    border-left: 6px solid var(--accent-color);
+    padding-left: 14px;
+    margin-top: 35px;
+}
+
+h3 { font-size: 1.5em; }
+
+p { margin: 10px 0; }
+.text-muted { color: var(--text-muted); }
+a { color: var(--primary-color); }
+a:hover { color: var(--hot-color); }
+
+/* === LIST GROUP === */
+.list-group { list-style: none; padding: 0; margin: 20px 0; }
+
+.list-item {
+    background-color: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    margin-bottom: 12px;
+    padding: 18px 22px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.list-item:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 6px 6px 0 var(--accent-color);
+}
+
+.list-item a {
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+.list-item a:hover { color: var(--hot-color); }
+.list-item-block { display: block; }
+
+/* === BUTTONS === */
+.btn {
+    display: inline-block;
+    padding: 10px 18px;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85em;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--primary-color) !important;
+    background-color: white;
+    font-family: inherit;
+}
+
+.btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--primary-color);
+}
+
+.btn-primary { background-color: var(--accent-color); color: var(--primary-color) !important; }
+.btn-danger { background-color: var(--danger-color); color: white !important; }
+.btn-warning { background-color: var(--warning-color); color: var(--primary-color) !important; }
+.btn-hot { background-color: var(--hot-color); color: white !important; }
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+    padding: 14px;
+}
+
+/* === ADMIN PANEL === */
+.admin-panel {
+    background-color: var(--primary-color);
+    color: white;
+    border-left: 6px solid var(--hot-color);
+    padding: 22px;
+    margin-top: 30px;
+}
+
+.admin-panel strong {
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.admin-panel .btn {
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+/* === FORMS === */
+.form-group { margin-bottom: 18px; }
+
+label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary-color);
+    margin-bottom: 6px;
+}
+
+input[type="text"], input[type="number"], input[type="date"],
+input[type="datetime-local"], input[type="password"],
+textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-color);
+    background-color: white;
+    font-family: inherit;
+    font-size: 1em;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 4px 4px 0 var(--accent-color);
+}
+
+textarea { resize: vertical; }
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.85em;
+    font-weight: 600;
+    display: block;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.form-actions .btn {
+    flex: 1;
+    text-align: center;
+}
+
+/* === MATCH CARD === */
+.match-card {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px;
+    margin: 25px 0;
+    border-left: 6px solid var(--accent-color);
+    text-align: center;
+}
+
+.match-card .teams {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5em;
+    letter-spacing: 2px;
+    margin: 10px 0;
+}
+
+.match-card .teams .vs { color: var(--text-muted); margin: 0 20px; font-size: 0.7em; }
+.match-card .teams .score { color: var(--accent-color); margin: 0 20px; }
+
+.match-card .info { color: #ccc; margin: 8px 0; font-size: 0.95em; }
+.match-card .info strong { color: white; }
+
+/* === TABLE === */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: 3px solid var(--primary-color);
+}
+
+table thead { background-color: var(--primary-color); color: white; }
+
+table th {
+    padding: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85em;
+    font-weight: 700;
+    text-align: left;
+}
+
+table tbody tr { border-bottom: 2px solid #eee; background-color: var(--card-bg); }
+table tbody tr:hover { background-color: #f0fdf6; }
+table tbody tr:last-child { border-bottom: none; }
+table td { padding: 14px; font-weight: 500; }
+
+/* === COMMENTI === */
+.comment {
+    background-color: var(--card-bg);
+    border: 2px solid var(--primary-color);
+    border-left: 6px solid var(--accent-color);
+    margin-bottom: 12px;
+    padding: 18px 22px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-author {
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.comment-date { color: var(--text-muted); font-size: 0.85em; }
+.comment-text { line-height: 1.5; font-size: 1em; }
+
+/* === MISC === */
+.empty-state { color: var(--text-muted); font-style: italic; padding: 20px 0; }
+
+.alert {
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    border: 2px solid var(--primary-color);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9em;
+}
+
+.alert-error { background-color: var(--danger-color); color: white; }
+.alert-success { background-color: var(--accent-color); color: var(--primary-color); }
+
+.login-info-box {
+    background-color: var(--bg-color);
+    border: 2px solid var(--primary-color);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* === FOOTER === */
+.footer {
+    text-align: center;
+    padding: 25px;
+    margin-top: 50px;
+    color: var(--text-muted);
+    font-size: 0.85em;
+    border-top: 4px solid var(--primary-color);
+    background-color: var(--card-bg);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .container { margin: 15px; padding: 20px; }
+    h1 { font-size: 2.2em; }
+    .navbar { flex-direction: column; gap: 15px; }
+    .form-actions { flex-direction: column; }
+}

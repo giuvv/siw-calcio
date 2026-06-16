@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Torneo')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container container-medium">
+        <h1 th:text="${torneo.id == null ? '+ Nuovo Torneo' : 'Modifica Torneo'}">Torneo</h1>
+        
+        <form th:action="@{/admin/torneo/salva}" th:object="${torneo}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label>Nome Torneo</label>
+                <input type="text" th:field="*{nome}" />
+                <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Anno</label>
+                <input type="number" th:field="*{anno}" />
+                <span th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Descrizione</label>
+                <textarea th:field="*{descrizione}" rows="3"></textarea>
+                <span th:if="${#fields.hasErrors('descrizione')}" th:errors="*{descrizione}" class="error-message"></span>
+            </div>
+            
+            <div class="form-group">
+                <label>Seleziona Squadre Partecipanti</label>
+                <div th:each="s : ${tutteLeSquadre}" style="margin-bottom: 8px;">
+                    <input type="checkbox" th:field="*{squadre}" th:value="${s.id}" style="width: auto; padding: 0; vertical-align: middle;" />
+                    <label th:text="${s.nome}" style="display: inline; text-transform: none; font-weight: 500; letter-spacing: 0; margin-left: 5px;"></label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salva Torneo</button>
+                <a th:href="@{/admin/dashboard}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

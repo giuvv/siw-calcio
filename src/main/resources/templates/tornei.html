@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Tornei')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1>Tornei</h1>
+        
+        <p class="empty-state" th:if="${#lists.isEmpty(tornei)}">
+            Nessun torneo disponibile al momento.
+        </p>
+
+        <ul class="list-group">
+            <li th:each="t : ${tornei}" class="list-item">
+                <div>
+                    <a th:href="@{/torneo/{id}(id=${t.id})}" th:text="${t.nome}">Nome Torneo</a>
+                    <br>
+                    <span class="text-muted">Anno: <span th:text="${t.anno}"></span></span>
+                </div>
+                <a th:href="@{/torneo/{id}(id=${t.id})}" class="btn btn-primary">Dettagli</a>
+            </li>
+        </ul>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Arbitri')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1>Arbitri</h1>
+        
+        <div style="margin: 20px 0;">
+            <a th:href="@{/admin/arbitro/nuovo}" class="btn btn-primary">Aggiungi Nuovo Arbitro</a>
+        </div>
+        
+        <p class="empty-state" th:if="${#lists.isEmpty(arbitri)}">
+            Nessun arbitro registrato.
+        </p>
+        
+        <ul class="list-group">
+            <li th:each="a : ${arbitri}" class="list-item">
+                <div>
+                    <strong th:text="${a.nome} + ' ' + ${a.cognome}"></strong>
+                    <br>
+                    <span class="text-muted">Codice: <span th:text="${a.codiceArbitrale}"></span></span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <a th:href="@{/admin/arbitro/{id}/modifica(id=${a.id})}" class="btn btn-warning"></a>
+                    <a th:href="@{/admin/arbitro/{id}/elimina(id=${a.id})}" 
+                       class="btn btn-danger"
+                       onclick="return confirm('Sei sicuro di voler eliminare questo arbitro?');"></a>
+                </div>
+            </li>
+        </ul>
+        
+        <br>
+        <a th:href="@{/admin/dashboard}" class="btn">Dashboard</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

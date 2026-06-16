@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Torneo')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1 th:text="${torneo.nome}">Torneo</h1>
+        <p class="text-muted" th:text="${torneo.descrizione}"></p>
+        <p><strong>Anno:</strong> <span th:text="${torneo.anno}"></span></p>
+        
+        <div style="margin: 25px 0; display: flex; gap: 12px;">
+            <a th:href="@{/torneo/{id}/calendario(id=${torneo.id})}" class="btn btn-primary">Calendario</a>
+            <a th:href="@{/torneo/{id}/classifica(id=${torneo.id})}" class="btn btn-primary">Classifica</a>
+        </div>
+        
+        <h2>Squadre Partecipanti</h2>
+        <ul class="list-group">
+            <li th:each="s : ${torneo.squadre}" class="list-item">
+                <a th:href="@{/squadra/{id}(id=${s.id})}" th:text="${s.nome}">Nome Squadra</a>
+            </li>
+        </ul>
+
+        <div sec:authorize="hasRole('ADMIN')" class="admin-panel">
+            <strong>Azioni Admin</strong>
+            <a th:href="@{/admin/torneo/{id}/modifica(id=${torneo.id})}" class="btn btn-warning">Modifica</a>
+            <a th:href="@{/admin/torneo/{id}/elimina(id=${torneo.id})}" class="btn btn-danger"
+               onclick="return confirm('Sei sicuro di voler eliminare questo torneo?');">Elimina</a>
+        </div>
+
+        <br>
+        <a th:href="@{/tornei}" class="btn">Torna ai tornei</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

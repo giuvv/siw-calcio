@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Inserisci Risultato')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container container-narrow">
+        <h1>Inserisci Risultato</h1>
+        
+        <div class="match-card" style="margin-bottom: 30px;">
+            <div class="teams">
+                <span th:text="${partita.squadraHome.nome}">Casa</span>
+                <span class="vs">vs</span>
+                <span th:text="${partita.squadraAway.nome}">Ospite</span>
+            </div>
+        </div>
+
+        <form th:action="@{/admin/partita/{id}/risultato(id=${partita.id})}" method="post">
+            <div class="form-group">
+                <label>Gol in Casa (<span th:text="${partita.squadraHome.nome}"></span>)</label>
+                <input type="number" name="goalsHome" required min="0" />
+            </div>
+
+            <div class="form-group">
+                <label>Gol in Trasferta (<span th:text="${partita.squadraAway.nome}"></span>)</label>
+                <input type="number" name="goalsAway" required min="0" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salva Risultato</button>
+                <a th:href="@{/partita/{id}(id=${partita.id})}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

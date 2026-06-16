@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Squadra')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container container-medium">
+        <h1 th:text="${squadra.id == null ? '+ Nuova Squadra' : 'Modifica Squadra'}">Squadra</h1>
+        
+        <form th:action="@{/admin/squadra/salva}" th:object="${squadra}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label>Nome Squadra</label>
+                <input type="text" th:field="*{nome}" />
+                <span th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Anno di Fondazione</label>
+                <input type="number" th:field="*{annoFondazione}" />
+                <span th:if="${#fields.hasErrors('annoFondazione')}" th:errors="*{annoFondazione}" class="error-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Città</label>
+                <input type="text" th:field="*{citta}" />
+                <span th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}" class="error-message"></span>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Salva Squadra</button>
+                <a th:href="@{/admin/dashboard}" class="btn">Annulla</a>
+            </div>
+        </form>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

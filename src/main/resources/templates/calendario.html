@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/layout :: head('Calendario')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container">
+        <h1>Calendario</h1>
+        <p class="text-muted">Torneo: <strong th:text="${torneo.nome}"></strong></p>
+        
+        <p class="empty-state" th:if="${#lists.isEmpty(partite)}">
+            Nessuna partita pianificata.
+        </p>
+        
+        <ul class="list-group">
+            <li th:each="p : ${partite}" class="list-item">
+                <div>
+                    <span class="text-muted" th:text="${#temporals.format(p.dataOra, 'dd/MM/yyyy HH:mm')}"></span>
+                    <br>
+                    <strong th:text="${p.squadraHome.nome}">Casa</strong>
+                    <span style="margin: 0 10px; font-weight: 700;">
+                        <span th:text="${p.goalsHome != null ? p.goalsHome : '-'}"></span>
+                        :
+                        <span th:text="${p.goalsAway != null ? p.goalsAway : '-'}"></span>
+                    </span>
+                    <strong th:text="${p.squadraAway.nome}">Ospite</strong>
+                </div>
+                <a th:href="@{/partita/{id}(id=${p.id})}" class="btn btn-primary">Dettagli</a>
+            </li>
+        </ul>
+
+        <br>
+        <a th:href="@{/torneo/{id}(id=${torneo.id})}" class="btn">Torna al torneo</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
