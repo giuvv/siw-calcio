@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Errore')}"></head>
+<body>
+    <nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+    <div class="container" style="text-align: center; padding-top: 60px;">
+        <h1 style="font-size: 4em; margin-bottom: 0;">Oops</h1>
+        <p class="text-muted" th:text="${messaggio}">Si è verificato un errore imprevisto.</p>
+        <br>
+        <a th:href="@{/tornei}" class="btn btn-primary">Torna all'elenco Tornei</a>
+    </div>
+
+    <footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

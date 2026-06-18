@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tornei.calcioamatoriale.exception.RisorsaNonTrovataException;
 import com.tornei.calcioamatoriale.model.Partita;
 import com.tornei.calcioamatoriale.model.Squadra;
 import com.tornei.calcioamatoriale.model.Torneo;
@@ -28,12 +29,15 @@ public class TorneoService {
         return torneoRepository.findAll();
     }
 
+    // Lancia RisorsaNonTrovataException se l'id non esiste, invece di restituire null.
+    // Così chi chiama questo metodo (controller, altri service) non deve fare
+    // controlli null sparsi ovunque: se il torneo non c'è, il flusso si interrompe
+    // qui in modo esplicito e viene gestito centralmente da GlobalExceptionHandler.
     @Transactional(readOnly = true)
     public Torneo findById(Long id) {
-        Torneo torneo = torneoRepository.findById(id).orElse(null);
-        if (torneo != null) {
-            torneo.getSquadre().size(); // inizializza la collezione LAZY dentro la transazione
-        }
+        Torneo torneo = torneoRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Torneo non trovato con id " + id));
+        torneo.getSquadre().size(); // inizializza la collezione LAZY dentro la transazione
         return torneo;
     }
 

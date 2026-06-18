@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tornei.calcioamatoriale.exception.RisorsaNonTrovataException;
 import com.tornei.calcioamatoriale.model.Giocatore;
 import com.tornei.calcioamatoriale.repository.GiocatoreRepository;
 
@@ -19,6 +20,7 @@ public class GiocatoreService {
     
     @Transactional(readOnly = true)
     public Giocatore findById(Long id) {
-        return giocatoreRepository.findById(id).orElse(null);
+        return giocatoreRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Giocatore non trovato con id " + id));
     }
 }

@@ -2,6 +2,7 @@ package com.tornei.calcioamatoriale.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,16 +24,23 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // 1. Pagine pubbliche (Tutti possono vederle)
-                .requestMatchers("/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**", "/api/**", "/error", "/css/**", "/js/**").permitAll()
-                
-                // 2. Pagine Amministratore (Solo chi ha ruolo ADMIN)
+                // 1. Pagine pubbliche in LETTURA (Tutti possono vederle)
+                .requestMatchers(HttpMethod.GET,
+                        "/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**",
+                        "/api/**", "/error", "/css/**", "/js/**").permitAll()
+
+                // 2. Inserimento di un nuovo commento: richiede login.
+                //    IMPORTANTE: va dichiarato PRIMA della regola generica su /admin e /commento,
+                //    perché Spring Security applica la prima regola che combacia.
+                .requestMatchers(HttpMethod.POST, "/partita/*/commento").hasAnyRole("USER", "ADMIN")
+
+                // 3. Pagine Amministratore (Solo chi ha ruolo ADMIN)
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                
-                // 3. Modifica dei commenti (Aperto a USER e ADMIN, poi il controller verifica la paternità)
+
+                // 4. Modifica dei commenti (Aperto a USER e ADMIN, poi il controller verifica la paternità)
                 .requestMatchers("/commento/**").hasAnyRole("USER", "ADMIN")
-                
-                // Tutto il resto richiede il login (incluso il POST per creare nuovi commenti)
+
+                // Tutto il resto richiede il login
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

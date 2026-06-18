@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tornei.calcioamatoriale.exception.RisorsaNonTrovataException;
 import com.tornei.calcioamatoriale.model.Partita;
 import com.tornei.calcioamatoriale.repository.PartitaRepository;
 
@@ -24,7 +25,8 @@ public class PartitaService {
     // un parziale aggiornamento di un'altra transazione ancora aperta.
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void inserisciRisultato(Long id, Integer goalsHome, Integer goalsAway) {
-        Partita p = partitaRepository.findById(id).orElseThrow();
+        Partita p = partitaRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Partita non trovata con id " + id));
         p.setGoalsHome(goalsHome);
         p.setGoalsAway(goalsAway);
         p.setStato("PLAYED");
@@ -38,6 +40,7 @@ public class PartitaService {
     
     @Transactional(readOnly = true)
     public Partita findById(Long id) {
-        return partitaRepository.findById(id).orElse(null);
+        return partitaRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Partita non trovata con id " + id));
     }
 }

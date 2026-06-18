@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tornei.calcioamatoriale.exception.RisorsaNonTrovataException;
 import com.tornei.calcioamatoriale.model.Arbitro;
 import com.tornei.calcioamatoriale.repository.ArbitroRepository;
 
@@ -20,7 +21,8 @@ public class ArbitroService {
 
     @Transactional(readOnly = true)
     public Arbitro findById(Long id) {
-        return arbitroRepository.findById(id).orElse(null);
+        return arbitroRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Arbitro non trovato con id " + id));
     }
 
     @Transactional

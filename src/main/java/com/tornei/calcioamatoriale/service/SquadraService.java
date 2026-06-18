@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tornei.calcioamatoriale.exception.RisorsaNonTrovataException;
 import com.tornei.calcioamatoriale.model.Partita;
 import com.tornei.calcioamatoriale.model.Squadra;
 import com.tornei.calcioamatoriale.model.Torneo;
@@ -28,7 +29,8 @@ public class SquadraService {
 
     @Transactional(readOnly = true)
     public Squadra findById(Long id) {
-        return squadraRepository.findById(id).orElse(null);
+        return squadraRepository.findById(id)
+                .orElseThrow(() -> new RisorsaNonTrovataException("Squadra non trovata con id " + id));
     }
     
     // ANALISI PRESTAZIONI
@@ -75,7 +77,11 @@ public class SquadraService {
      */
     @Transactional(readOnly = true)
     public Squadra findByIdWithGiocatori(Long id) {
-        return findByIdConGiocatoriJoinFetch(id);
+        Squadra squadra = findByIdConGiocatoriJoinFetch(id);
+        if (squadra == null) {
+            throw new RisorsaNonTrovataException("Squadra non trovata con id " + id);
+        }
+        return squadra;
     }
 
     @Transactional
