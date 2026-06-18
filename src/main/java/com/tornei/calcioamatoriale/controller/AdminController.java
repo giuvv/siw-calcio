@@ -196,9 +196,21 @@ public class AdminController {
     }
 
     @PostMapping("/partita/{id}/risultato")
-    public String salvaRisultato(@PathVariable Long id, @RequestParam Integer goalsHome, @RequestParam Integer goalsAway) {
-        partitaService.inserisciRisultato(id, goalsHome, goalsAway);
-        return "redirect:/partita/" + id;
+    public String salvaRisultato(@PathVariable Long id,
+                                  @RequestParam Integer goalsHome,
+                                  @RequestParam Integer goalsAway,
+                                  Model model) {
+        try {
+            partitaService.inserisciRisultato(id, goalsHome, goalsAway);
+            return "redirect:/partita/" + id;
+        } catch (IllegalArgumentException e) {
+            // Il service ha rifiutato i valori (es. gol negativi): ripresentiamo
+            // il form mostrando il messaggio di errore, invece di far esplodere
+            // l'eccezione fino al GlobalExceptionHandler.
+            model.addAttribute("partita", partitaService.findById(id));
+            model.addAttribute("errore", e.getMessage());
+            return "admin/form-risultato";
+        }
     }
 
     @GetMapping("/partita/{id}/elimina")

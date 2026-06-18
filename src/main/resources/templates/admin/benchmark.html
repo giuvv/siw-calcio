@@ -12,31 +12,6 @@
         </p>
 
         <!-- =====================================================
-             SEZIONE 1: SPIEGAZIONE TEORICA
-             ===================================================== -->
-        <div style="background:#f8f9fa; border-left:4px solid #3b82f6; padding:16px 20px; margin-bottom:24px; border-radius:4px;">
-            <h3 style="margin-top:0;">Il problema N+1</h3>
-            <p>
-                Quando si carica una <code>Squadra</code> e si accede poi ai suoi
-                <code>Giocatori</code>, JPA/Hibernate deve fare una scelta:
-                caricarli subito (<strong>EAGER</strong>) o aspettare che vengano
-                richiesti (<strong>LAZY</strong>).
-            </p>
-            <p>
-                Con la strategia <strong>LAZY</strong>, il codice
-                <code>squadra.getGiocatori().size()</code> scatena una <em>seconda</em>
-                query SQL separata. Per 1 squadra questo è 1+1 = 2 query.
-                Se si caricassero N squadre e per ognuna si accedessero i giocatori,
-                il totale salirebbe a <strong>N+1 query</strong>.
-            </p>
-            <p>
-                Con <strong>JOIN FETCH</strong> (query JPQL personalizzata nel repository),
-                Hibernate recupera squadra e giocatori in <strong>una sola query</strong>
-                con LEFT JOIN, eliminando completamente il problema.
-            </p>
-        </div>
-
-        <!-- =====================================================
              SEZIONE 2: CODICE A CONFRONTO
              ===================================================== -->
         <h2>Le due strategie nel codice</h2>
