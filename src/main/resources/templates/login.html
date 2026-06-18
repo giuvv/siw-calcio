@@ -16,6 +16,10 @@
         <div th:if="${param.logout}" class="alert alert-success">
             Sei uscito con successo. A presto!
         </div>
+		
+		<div th:if="${param.registrato}" class="alert alert-success">
+		            Registrazione completata! Accedi con le credenziali appena create.
+		</div>
 
         <form th:action="@{/login}" method="post">
             <div class="form-group" style="text-align: left;">

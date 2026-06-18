@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	// Dichiariamo quale algoritmo usare per le password (lo stesso usato nel DataInitializer)
+	// Dichiariamo quale algoritmo usare per le password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -27,7 +27,11 @@ public class SecurityConfig {
                 // 1. Pagine pubbliche in LETTURA (Tutti possono vederle)
                 .requestMatchers(HttpMethod.GET,
                         "/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**",
-                        "/api/**", "/error", "/css/**", "/js/**").permitAll()
+                        "/api/**", "/error", "/css/**", "/js/**", "/registrazione").permitAll()
+
+                // 1bis. Invio del form di registrazione: pubblico per definizione
+                // (chi si registra non è ancora autenticato).
+                .requestMatchers(HttpMethod.POST, "/registrazione").permitAll()
 
                 // 2. Inserimento di un nuovo commento: richiede login.
                 //    IMPORTANTE: va dichiarato PRIMA della regola generica su /admin e /commento,

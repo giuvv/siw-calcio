@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Registrazione')}"></head>
+<body>
+    <div class="container container-narrow" style="margin-top: 60px; text-align: center;">
+        <h1>Crea un account</h1>
+        <p class="text-muted" style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.9em; margin-bottom: 30px;">
+            Registrati per commentare le partite o gestire i tornei
+        </p>
+
+        <div th:if="${errore}" class="alert alert-error" th:text="${errore}"></div>
+
+        <form th:action="@{/registrazione}" method="post">
+            <div class="form-group" style="text-align: left;">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" th:value="${username}" required autofocus minlength="3" />
+            </div>
+
+            <div class="form-group" style="text-align: left;">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6" />
+            </div>
+
+            <div class="form-group" style="text-align: left;">
+                <label for="confermaPassword">Conferma password</label>
+                <input type="password" id="confermaPassword" name="confermaPassword" required minlength="6" />
+            </div>
+
+            <div class="form-group" style="text-align: left;">
+                <label>Tipo di account</label>
+                <div style="margin-top: 6px;">
+                    <input type="radio" id="ruoloUser" name="ruolo" value="USER"
+                           th:checked="${ruolo == null or ruolo == 'USER'}"
+                           style="width: auto; vertical-align: middle;" />
+                    <label for="ruoloUser" style="display: inline; text-transform: none; font-weight: 500; letter-spacing: 0; margin-left: 5px;">
+                        Utente registrato — commenta le partite
+                    </label>
+                </div>
+                <div style="margin-top: 6px;">
+                    <input type="radio" id="ruoloAdmin" name="ruolo" value="ADMIN"
+                           th:checked="${ruolo == 'ADMIN'}"
+                           style="width: auto; vertical-align: middle;" />
+                    <label for="ruoloAdmin" style="display: inline; text-transform: none; font-weight: 500; letter-spacing: 0; margin-left: 5px;">
+                        Amministratore — gestisce tornei, squadre e partite
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;">Registrati</button>
+        </form>
+
+        <div style="margin-top: 25px;">
+            <a th:href="@{/login}">Hai già un account? Accedi</a>
+        </div>
+    </div>
+</body>
+</html>

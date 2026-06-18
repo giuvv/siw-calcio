@@ -8,21 +8,22 @@
 </head>
 <body>
 
-    <nav th:fragment="navbar" class="navbar">
-        <a th:href="@{/tornei}" class="navbar-brand">ScoreMaster</a>
-        <div class="user-info">
-            <span sec:authorize="!isAuthenticated()">
-                <a th:href="@{/login}" class="btn btn-primary">Accedi</a>
-            </span>
-            <span sec:authorize="isAuthenticated()">
-            	<strong sec:authentication="name">Utente</strong>
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">Dashboard</a>
-                <form th:action="@{/logout}" method="post" style="display:inline;">
-                    <button type="submit" class="btn btn-danger">Esci</button>
-                </form>
-            </span>
-        </div>
-    </nav>
+	<nav th:fragment="navbar" class="navbar">
+	        <a th:href="@{/tornei}" class="navbar-brand">ScoreMaster</a>
+	        <div class="user-info">
+	            <span sec:authorize="!isAuthenticated()">
+	                <a th:href="@{/registrazione}">Registrati</a>
+	                <a th:href="@{/login}" class="btn btn-primary">Accedi</a>
+	            </span>
+	            <span sec:authorize="isAuthenticated()">
+	            	<strong sec:authentication="name">Utente</strong>
+	                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/dashboard}">Dashboard</a>
+	                <form th:action="@{/logout}" method="post" style="display:inline;">
+	                    <button type="submit" class="btn btn-danger">Esci</button>
+	                </form>
+	            </span>
+	        </div>
+	    </nav>
 
     <footer th:fragment="footer" class="footer">
         ScoreMaster &mdash; Stadium Edition

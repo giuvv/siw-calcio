@@ -5,15 +5,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tornei.calcioamatoriale.service.SquadraService;
 import com.tornei.calcioamatoriale.service.TorneoService;
+import com.tornei.calcioamatoriale.service.UtenteService;
 
 @Controller
 public class PublicController {
 
     @Autowired private TorneoService torneoService;
     @Autowired private SquadraService squadraService;
+    @Autowired private UtenteService utenteService;
 
     // 1. Elenco Tornei
     @GetMapping({"/", "/tornei"})
@@ -55,5 +59,30 @@ public class PublicController {
     @GetMapping("/login")
     public String mostraPaginaLogin() {
         return "login"; // Questo dice a Spring di caricare il tuo file login.html
+    }
+
+    // REGISTRAZIONE
+    @GetMapping("/registrazione")
+    public String formRegistrazione() {
+        return "registrazione";
+    }
+
+    @PostMapping("/registrazione")
+    public String registra(@RequestParam String username,
+                            @RequestParam String password,
+                            @RequestParam String confermaPassword,
+                            @RequestParam String ruolo,
+                            Model model) {
+        try {
+            utenteService.registra(username, password, confermaPassword, ruolo);
+            return "redirect:/login?registrato";
+        } catch (IllegalArgumentException e) {
+            // Validazione fallita: ripresentiamo il form con il messaggio di errore,
+            // mantenendo i valori già inseriti (tranne le password, per sicurezza).
+            model.addAttribute("errore", e.getMessage());
+            model.addAttribute("username", username);
+            model.addAttribute("ruolo", ruolo);
+            return "registrazione";
+        }
     }
 }
