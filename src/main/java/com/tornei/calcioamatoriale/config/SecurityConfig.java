@@ -24,12 +24,12 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                // 1. Pagine pubbliche in LETTURA (Tutti possono vederle)
+                // 1. Pagine pubbliche in LETTURA (tutti possono vederle)
                 .requestMatchers(HttpMethod.GET,
                         "/", "/tornei", "/torneo/**", "/squadra/**", "/partita/**",
                         "/api/**", "/error", "/css/**", "/js/**", "/registrazione").permitAll()
 
-                // 1bis. Invio del form di registrazione: pubblico per definizione
+                // 1.1. Invio del form di registrazione: pubblico per definizione
                 // (chi si registra non è ancora autenticato).
                 .requestMatchers(HttpMethod.POST, "/registrazione").permitAll()
 
@@ -41,7 +41,7 @@ public class SecurityConfig {
                 // 3. Pagine Amministratore (Solo chi ha ruolo ADMIN)
                 .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                // 4. Modifica dei commenti (Aperto a USER e ADMIN, poi il controller verifica la paternità)
+                // 4. Modifica dei commenti (Aperto a USER e ADMIN)
                 .requestMatchers("/commento/**").hasAnyRole("USER", "ADMIN")
 
                 // Tutto il resto richiede il login

@@ -58,7 +58,7 @@ public class PublicController {
     
     @GetMapping("/login")
     public String mostraPaginaLogin() {
-        return "login"; // Questo dice a Spring di caricare il tuo file login.html
+        return "login"; // Dice a Spring di caricare il file login.html
     }
 
     // REGISTRAZIONE
@@ -70,15 +70,12 @@ public class PublicController {
     @PostMapping("/registrazione")
     public String registra(@RequestParam String username,
                             @RequestParam String password,
-                            @RequestParam String confermaPassword,
                             @RequestParam String ruolo,
                             Model model) {
         try {
-            utenteService.registra(username, password, confermaPassword, ruolo);
+            utenteService.registra(username, password, ruolo);
             return "redirect:/login?registrato";
         } catch (IllegalArgumentException e) {
-            // Validazione fallita: ripresentiamo il form con il messaggio di errore,
-            // mantenendo i valori già inseriti (tranne le password, per sicurezza).
             model.addAttribute("errore", e.getMessage());
             model.addAttribute("username", username);
             model.addAttribute("ruolo", ruolo);

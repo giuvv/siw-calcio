@@ -27,7 +27,7 @@ public class UtenteService {
      * Il ruolo è scelto liberamente da chi si registra (ADMIN o USER)
      */
     @Transactional
-    public void registra(String username, String password, String confermaPassword, String ruolo) {
+    public void registra(String username, String password, String ruolo) {
 
         if (username == null || username.trim().length() < 3) {
             throw new IllegalArgumentException("Lo username deve avere almeno 3 caratteri.");
@@ -35,13 +35,7 @@ public class UtenteService {
         if (password == null || password.length() < 6) {
             throw new IllegalArgumentException("La password deve avere almeno 6 caratteri.");
         }
-        if (!password.equals(confermaPassword)) {
-            throw new IllegalArgumentException("Le due password non coincidono.");
-        }
         if (!"ADMIN".equals(ruolo) && !"USER".equals(ruolo)) {
-            // Il <select> nel form offre solo questi due valori, ma il controllo
-            // va ripetuto qui perché una richiesta diretta (curl/Postman) potrebbe
-            // inviare un valore arbitrario per "ruolo".
             throw new IllegalArgumentException("Ruolo non valido.");
         }
         if (utenteRepository.findByUsername(username.trim()) != null) {

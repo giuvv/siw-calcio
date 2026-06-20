@@ -221,26 +221,16 @@ public class AdminController {
         return "redirect:/torneo/" + torneoId + "/calendario";
     }
 
-    // ANALISI PRESTAZIONI
+ // ANALISI PRESTAZIONI
     /*
-     * Pagina iniziale del benchmark: mostra la lista delle squadre
-     * e permette di scegliere su quale eseguire il confronto.
-     */
-    @GetMapping("/benchmark")
-    public String benchmarkForm(Model model) {
-        model.addAttribute("squadre", squadraService.findAll());
-        return "admin/benchmark";
-    }
-
-    /*
-     * Esegue il confronto tra LAZY e JOIN FETCH sulla squadra indicata e mostra i risultati.
-     * Le due chiamate sono in transazioni separate (ogni metodo @Transactional apre
-     * la propria sessione Hibernate), quindi la cache L1 non inquina i risultati.
+     * Esegue il confronto tra LAZY e JOIN FETCH sulla squadra indicata e stampa
+     * i tempi sulla console (terminale dove gira l'app), invece di mostrarli
+     * in una pagina HTML. Le due chiamate sono in transazioni separate (ogni
+     * metodo @Transactional apre la propria sessione Hibernate), quindi la
+     * cache L1 non inquina i risultati.
      */
     @GetMapping("/benchmark/{squadraId}")
-    public String eseguiBenchmark(@PathVariable Long squadraId, Model model) {
-        model.addAttribute("squadre", squadraService.findAll());
-        model.addAttribute("squadraId", squadraId);
+    public String eseguiBenchmark(@PathVariable Long squadraId) {
 
         // --- Strategia 1: LAZY (N+1) ---
         long start1 = System.nanoTime();
@@ -252,12 +242,15 @@ public class AdminController {
         Squadra squadraJoin = squadraService.findByIdConGiocatoriJoinFetch(squadraId);
         long tempoJoinFetch = System.nanoTime() - start2;
 
-        model.addAttribute("benchmarkEseguito", true);
-        model.addAttribute("nomeSquadra", squadraLazy != null ? squadraLazy.getNome() : "?");
-        model.addAttribute("numGiocatori", squadraLazy != null ? squadraLazy.getGiocatori().size() : 0);
-        model.addAttribute("tempoLazy_ms",      String.format("%.3f", tempoLazy     / 1_000_000.0));
-        model.addAttribute("tempoJoinFetch_ms", String.format("%.3f", tempoJoinFetch / 1_000_000.0));
+        String nomeSquadra = squadraLazy != null ? squadraLazy.getNome() : "?";
+        int numGiocatori = squadraLazy != null ? squadraLazy.getGiocatori().size() : 0;
 
-        return "admin/benchmark";
+        System.out.println("=== ANALISI PRESTAZIONI: LAZY vs JOIN FETCH ===");
+        System.out.println("Squadra: " + nomeSquadra + " (id=" + squadraId + "), giocatori: " + numGiocatori);
+        System.out.printf("Strategia LAZY (N+1):       %.3f ms%n", tempoLazy / 1_000_000.0);
+        System.out.printf("Strategia JOIN FETCH (1 query): %.3f ms%n", tempoJoinFetch / 1_000_000.0);
+        System.out.println("================================================");
+
+        return "redirect:/admin/dashboard";
     }
 }
