@@ -1,7 +1,7 @@
 package com.tornei.calcioamatoriale.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import com.tornei.calcioamatoriale.model.Giocatore;
 
-public interface GiocatoreRepository extends CrudRepository<Giocatore, Long> {
+public interface GiocatoreRepository extends JpaRepository<Giocatore, Long> {
 }
