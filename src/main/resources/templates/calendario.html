@@ -8,13 +8,7 @@
         <h1>Calendario</h1>
         <p class="text-muted">Torneo: <strong th:text="${torneo.nome}"></strong></p>
 
-        <!--
-            Il calendario è reso da un componente React.
-            Il componente:
-              1. Recupera le partite via fetch() dall'API REST /api/torneo/{id}/calendario
-              2. Mantiene nello stato il filtro corrente (Tutte / Da giocare / Già giocate)
-              3. Aggiorna la lista istantaneamente al click sul filtro, senza ricaricare la pagina
-        -->
+        <!-- Il calendario è reso da un componente React (vedi /js/calendario.js) -->
         <div id="calendario-react" th:attr="data-torneo-id=${torneo.id}">
             <p class="text-muted">Caricamento partite...</p>
         </div>
@@ -27,114 +21,6 @@
 
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-
-    <script>
-        const { useState, useEffect } = React;
-
-        // Componente principale: CalendarioFiltrato
-        // Riceve come prop l'ID del torneo per sapere quale API chiamare
-        function CalendarioFiltrato({ torneoId }) {
-
-            // 1: il filtro attivo. Può essere "TUTTE", "SCHEDULED" o "PLAYED"
-            const [filtro, setFiltro] = useState("TUTTE");
-
-            // 2: la lista completa di partite arrivata dall'API
-            const [partite, setPartite] = useState([]);
-
-            // 3: indica se il fetch è ancora in corso
-            const [loading, setLoading] = useState(true);
-
-            // useEffect si esegue una sola volta al mount del componente (array [] vuoto)
-            // Fa la chiamata REST e salva i dati nello stato
-            useEffect(function() {
-                fetch('/api/torneo/' + torneoId + '/calendario')
-                    .then(function(res) { return res.json(); })
-                    .then(function(data) {
-                        setPartite(data);
-                        setLoading(false);
-                    });
-            }, []);
-
-            // Ogni volta che cambia "filtro" o "partite", React ricalcola questa variabile
-            const partiteFiltrate = (filtro === "TUTTE")
-                ? partite
-                : partite.filter(function(p) { return p.stato === filtro; });
-
-            if (loading) {
-                return React.createElement('p', { className: 'text-muted' }, 'Caricamento...');
-            }
-
-            // Tre bottoni filtro
-            const bottoni = React.createElement('div',
-                { style: { marginBottom: '20px', display: 'flex', gap: '10px', flexWrap: 'wrap' } },
-                React.createElement('button', {
-                    className: 'btn' + (filtro === 'TUTTE'     ? ' btn-primary' : ''),
-                    onClick: function() { setFiltro('TUTTE'); }
-                }, 'Tutte'),
-                React.createElement('button', {
-                    className: 'btn' + (filtro === 'SCHEDULED' ? ' btn-primary' : ''),
-                    onClick: function() { setFiltro('SCHEDULED'); }
-                }, 'Da giocare'),
-                React.createElement('button', {
-                    className: 'btn' + (filtro === 'PLAYED'    ? ' btn-primary' : ''),
-                    onClick: function() { setFiltro('PLAYED'); }
-                }, 'Già giocate')
-            );
-
-            // Messaggio se la categoria è vuota
-            if (partiteFiltrate.length === 0) {
-                return React.createElement('div', null,
-                    bottoni,
-                    React.createElement('p', { className: 'empty-state' },
-                        'Nessuna partita in questa categoria.')
-                );
-            }
-
-            // Una riga per ogni partita filtrata
-            const righe = partiteFiltrate.map(function(p) {
-
-                // Data: "dd/mm/yyyy hh:mm"
-                const data = p.dataOra
-                    ? new Date(p.dataOra).toLocaleString('it-IT', {
-                        day: '2-digit', month: '2-digit', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit'
-                      })
-                    : '';
-
-                // Mostra il risultato se la partita è stata giocata, altrimenti "vs"
-                const risultato = (p.stato === 'PLAYED')
-                    ? React.createElement('span', { style: { margin: '0 10px', fontWeight: '700' } },
-                          p.goalsHome + ' : ' + p.goalsAway)
-                    : React.createElement('span', { style: { margin: '0 10px', color: '#666' } }, 'vs');
-
-                const contenuto = React.createElement('div', null,
-                    React.createElement('span', { className: 'text-muted' }, data),
-                    React.createElement('br'),
-                    React.createElement('strong', null, p.squadraHome),
-                    risultato,
-                    React.createElement('strong', null, p.squadraAway)
-                );
-
-                const linkDettaglio = React.createElement('a', {
-                    href: '/partita/' + p.id,
-                    className: 'btn btn-primary'
-                }, 'Dettagli');
-
-                return React.createElement('li', { key: p.id, className: 'list-item' },
-                    contenuto,
-                    linkDettaglio
-                );
-            });
-
-            const lista = React.createElement('ul', { className: 'list-group' }, righe);
-
-            return React.createElement('div', null, bottoni, lista);
-        }
-
-        const container = document.getElementById('calendario-react');
-        const torneoId  = container.getAttribute('data-torneo-id');
-        const root      = ReactDOM.createRoot(container);
-        root.render(React.createElement(CalendarioFiltrato, { torneoId: torneoId }));
-    </script>
+    <script src="/js/calendario.js"></script>
 </body>
 </html>
