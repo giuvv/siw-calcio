@@ -16,7 +16,6 @@ import com.tornei.calcioamatoriale.service.TorneoService;
 
 /*
  * Controller REST: espone i dati del torneo in formato JSON.
- * Usato dal frontend React per caricare il calendario in modo asincrono.
  */
 @RestController
 @RequestMapping("/api")
@@ -27,7 +26,6 @@ public class ApiController {
 
     /*
      * Restituisce la lista delle partite di un torneo come array JSON.
-     * Ogni partita contiene solo i campi utili al frontend
      */
     @GetMapping("/torneo/{id}/calendario")
     public List<Map<String, Object>> getCalendario(@PathVariable Long id) {

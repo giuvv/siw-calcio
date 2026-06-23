@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	// Dichiariamo quale algoritmo usare per le password
+	// Algoritmo da usare per le password
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

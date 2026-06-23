@@ -34,7 +34,6 @@ public class SquadraService {
     }
     
     // ANALISI PRESTAZIONI
-    // Caso d'uso: "visualizzazione dettaglio squadra con giocatori"
     // Confronto tra due strategie di fetch JPA
 
     /*
@@ -89,14 +88,12 @@ public class SquadraService {
         squadraRepository.save(squadra);
     }
 
-    // READ_COMMITTED: durante l'eliminazione leggiamo tornei e partite;
-    // vogliamo vedere solo dati confermati, non scritture parziali di altre transazioni.
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void eliminaSquadra(Long id) {
         Squadra squadra = squadraRepository.findById(id).orElse(null);
         
         if (squadra != null) {
-            // 1. Rimuove la squadra dalla tabella di congiunzione dei Tornei (Many-to-Many)
+            // 1. Rimuove la squadra dalla tabella di congiunzione dei Tornei
             Iterable<Torneo> tornei = torneoRepository.findAll();
             for (Torneo t : tornei) {
                 if (t.getSquadre() != null && t.getSquadre().contains(squadra)) {
@@ -105,7 +102,7 @@ public class SquadraService {
                 }
             }
 
-            // 2. Elimina tutti i giocatori iscritti (One-to-Many)
+            // 2. Elimina tutti i giocatori iscritti
             if (squadra.getGiocatori() != null) {
                 giocatoreRepository.deleteAll(squadra.getGiocatori());
             }

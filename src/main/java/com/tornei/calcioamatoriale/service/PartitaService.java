@@ -21,14 +21,6 @@ public class PartitaService {
         partitaRepository.save(partita);
     }
 
-    // Con READ_COMMITTED evitiamo di leggere
-    // un parziale aggiornamento di un'altra transazione ancora aperta.
-    //
-    // Validazione: l'attributo HTML "min=0" nel form è solo un aiuto per
-    // l'utente onesto, ma è bypassabile (devtools, richiesta diretta via
-    // curl/Postman). La regola di business "i gol non possono essere
-    // negativi" va quindi ricontrollata qui, a livello di service, così
-    // vale per chiunque chiami questo metodo, non solo per questo form.
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void inserisciRisultato(Long id, Integer goalsHome, Integer goalsAway) {
         if (goalsHome == null || goalsAway == null || goalsHome < 0 || goalsAway < 0) {

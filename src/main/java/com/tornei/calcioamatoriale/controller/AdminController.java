@@ -205,8 +205,7 @@ public class AdminController {
             return "redirect:/partita/" + id;
         } catch (IllegalArgumentException e) {
             // Il service ha rifiutato i valori (es. gol negativi): ripresentiamo
-            // il form mostrando il messaggio di errore, invece di far esplodere
-            // l'eccezione fino al GlobalExceptionHandler.
+            // il form mostrando il messaggio di errore
             model.addAttribute("partita", partitaService.findById(id));
             model.addAttribute("errore", e.getMessage());
             return "admin/form-risultato";
@@ -224,20 +223,17 @@ public class AdminController {
  // ANALISI PRESTAZIONI
     /*
      * Esegue il confronto tra LAZY e JOIN FETCH sulla squadra indicata e stampa
-     * i tempi sulla console (terminale dove gira l'app), invece di mostrarli
-     * in una pagina HTML. Le due chiamate sono in transazioni separate (ogni
-     * metodo @Transactional apre la propria sessione Hibernate), quindi la
-     * cache L1 non inquina i risultati.
+     * i tempi sulla console.
      */
     @GetMapping("/benchmark/{squadraId}")
     public String eseguiBenchmark(@PathVariable Long squadraId) {
 
-        // --- Strategia 1: LAZY (N+1) ---
+        // Strategia 1: LAZY (N+1)
         long start1 = System.nanoTime();
         Squadra squadraLazy = squadraService.findByIdConGiocatoriLazy(squadraId);
         long tempoLazy = System.nanoTime() - start1;
 
-        // --- Strategia 2: JOIN FETCH (1 query) ---
+        // Strategia 2: JOIN FETCH (1 query)
         long start2 = System.nanoTime();
         Squadra squadraJoin = squadraService.findByIdConGiocatoriJoinFetch(squadraId);
         long tempoJoinFetch = System.nanoTime() - start2;

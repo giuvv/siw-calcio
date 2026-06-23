@@ -54,7 +54,6 @@ public class CommentoService {
         Commento commento = commentoRepository.findById(commentoId)
                 .orElseThrow(() -> new RuntimeException("Commento non trovato: " + commentoId));
 
-        // CONTROLLO DI SICUREZZA centralizzato nel service
         if (!commento.getAutore().getUsername().equals(username)) {
             throw new SecurityException("Non sei autorizzato a modificare questo commento");
         }

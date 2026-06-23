@@ -29,15 +29,11 @@ public class TorneoService {
         return torneoRepository.findAll();
     }
 
-    // Lancia RisorsaNonTrovataException se l'id non esiste, invece di restituire null.
-    // Così chi chiama questo metodo (controller, altri service) non deve fare
-    // controlli null sparsi ovunque: se il torneo non c'è, il flusso si interrompe
-    // qui in modo esplicito e viene gestito centralmente da GlobalExceptionHandler.
     @Transactional(readOnly = true)
     public Torneo findById(Long id) {
         Torneo torneo = torneoRepository.findById(id)
                 .orElseThrow(() -> new RisorsaNonTrovataException("Torneo non trovato con id " + id));
-        torneo.getSquadre().size(); // inizializza la collezione LAZY dentro la transazione
+        torneo.getSquadre().size();
         return torneo;
     }
 

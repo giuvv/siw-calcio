@@ -35,7 +35,7 @@ public class Partita {
     @Min(value = 0, message = "I gol non possono essere negativi")
     private Integer goalsAway;
     
-    // Conterrà "SCHEDULED", "PLAYED", ecc.
+    //SCHEDULED/PLAYED
     private String stato;
 
     @ManyToOne
@@ -57,7 +57,7 @@ public class Partita {
     public Partita() {
     }
 
-    // --- GETTER E SETTER ---
+    //GETTER E SETTER
 
     public Long getId() {
         return id;

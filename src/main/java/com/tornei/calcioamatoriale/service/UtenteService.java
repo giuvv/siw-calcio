@@ -23,7 +23,7 @@ public class UtenteService {
     }
 
     /**
-     * Registra un nuovo utente, validando i dati prima di salvarli.
+     * Registra un nuovo utente.
      * Il ruolo è scelto liberamente da chi si registra (ADMIN o USER)
      */
     @Transactional
