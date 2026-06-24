@@ -33,13 +33,7 @@
                 <input type="text" th:field="*{ruolo}" placeholder="Es. Attaccante" />
                 <span th:if="${#fields.hasErrors('ruolo')}" th:errors="*{ruolo}" class="error-message"></span>
             </div>
-
-            <div class="form-group">
-                <label>Altezza</label>
-                <input type="number" step="0.01" th:field="*{altezza}" placeholder="Es. 1.78" />
-                <span th:if="${#fields.hasErrors('altezza')}" th:errors="*{altezza}" class="error-message"></span>
-            </div>
-
+			
             <div class="form-group">
                 <label>Squadra di Appartenenza</label>
                 <select th:field="*{squadra}">

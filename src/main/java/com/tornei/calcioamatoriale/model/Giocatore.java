@@ -30,10 +30,6 @@ public class Giocatore {
 
     private String ruolo;
 
-    @DecimalMin(value = "1.40", message = "Altezza minima 1.40 m")
-    @DecimalMax(value = "2.30", message = "Altezza massima 2.30 m")
-    private Float altezza;
-
     @ManyToOne
     private Squadra squadra;
 
@@ -78,14 +74,6 @@ public class Giocatore {
 
     public void setRuolo(String ruolo) {
         this.ruolo = ruolo;
-    }
-
-    public Float getAltezza() {
-        return altezza;
-    }
-
-    public void setAltezza(Float altezza) {
-        this.altezza = altezza;
     }
 
     public Squadra getSquadra() {
